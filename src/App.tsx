@@ -2,10 +2,14 @@ import './App.css';
 import useAthletes from './hooks/useAthletes';
 import DataTable from './components/DataTable';
 import useTableStates from './hooks/useTableStates';
+import Pagination from './components/Pagination';
 
 function App() {
   const { data } = useAthletes();
-  const { rows, columns, onSort, sortKey, sortDir } = useTableStates({ data });
+  const { rows, columns, onSort, sortKey, sortDir, page, setPage, totalPages } = useTableStates({
+    data,
+    rowsPerPage: 15,
+  });
 
   return (
     <div className="w-screen min-h-screen">
@@ -17,6 +21,7 @@ function App() {
         sortKey={sortKey}
         sortDir={sortDir}
       />
+      <Pagination page={page} setPage={setPage} totalPages={totalPages} />
     </div>
   );
 }
