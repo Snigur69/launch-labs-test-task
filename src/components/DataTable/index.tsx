@@ -1,6 +1,8 @@
+import { memo } from 'react';
+
 import type { Athlete } from '../../types/athletes.ts';
 import type { TableColumn } from '../../types/table.ts';
-import { SortDirection } from '../../constants/table/sort.ts';
+import { SortDirection } from '../../constants/table/table.ts';
 
 interface Props {
   rows: Athlete[];
@@ -46,4 +48,4 @@ const DataTable = ({ rows, columns, onSort, sortKey, sortDir }: Props) => {
   );
 };
 
-export default DataTable;
+export default memo(DataTable);

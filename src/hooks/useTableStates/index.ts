@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { TABLE_COLUMNS } from '../../constants/table/columns.ts';
 import type { Athlete } from '../../types/athletes.ts';
-import { SortDirection } from '../../constants/table/sort.ts';
+import { SEARCH_KEYS, SortDirection } from '../../constants/table/table.ts';
+import useDebounce from '../useDebounce';
 
 interface Props {
   data: Athlete[];
@@ -13,11 +14,23 @@ const useTableStates = ({ data, rowsPerPage }: Props) => {
   const [sortKey, setSortKey] = useState<keyof Athlete | null>(null);
   const [sortDir, setSortDir] = useState<SortDirection>(SortDirection.ASC);
   const [page, setPage] = useState<number>(1);
+  const [search, setSearch] = useState<string>('');
+  const debouncedSearch = useDebounce(search);
+
+  const searchedRows = useMemo(() => {
+    const string = debouncedSearch.trim().toLowerCase();
+
+    if (!string) return data;
+
+    return data.filter((row) =>
+      SEARCH_KEYS.some((key) => String(row[key]).toLowerCase().includes(string)),
+    );
+  }, [data, debouncedSearch]);
 
   const sortedRows = useMemo(() => {
-    if (!sortKey) return data;
+    if (!sortKey) return searchedRows;
 
-    return [...data].sort((first, second) => {
+    return [...searchedRows].sort((first, second) => {
       const fistValue = first[sortKey];
       const secondValue = second[sortKey];
 
@@ -29,7 +42,7 @@ const useTableStates = ({ data, rowsPerPage }: Props) => {
         ? String(fistValue).localeCompare(String(secondValue))
         : String(secondValue).localeCompare(String(fistValue));
     });
-  }, [data, sortKey, sortDir]);
+  }, [searchedRows, sortKey, sortDir]);
 
   const totalPages = Math.ceil(sortedRows.length / rowsPerPage);
 
@@ -39,15 +52,21 @@ const useTableStates = ({ data, rowsPerPage }: Props) => {
     return sortedRows.slice(start, start + rowsPerPage);
   }, [sortedRows, page, rowsPerPage]);
 
-  const onSort = (key: keyof Athlete) => {
+  const onSort = useCallback(
+    (key: keyof Athlete) => {
+      if (sortKey === key) {
+        setSortDir(sortDir === SortDirection.ASC ? SortDirection.DESC : SortDirection.ASC);
+      } else {
+        setSortKey(key);
+        setSortDir(SortDirection.ASC);
+      }
+    },
+    [sortDir, sortKey],
+  );
+
+  useEffect(() => {
     setPage(1);
-    if (sortKey === key) {
-      setSortDir(sortDir === SortDirection.ASC ? SortDirection.DESC : SortDirection.ASC);
-    } else {
-      setSortKey(key);
-      setSortDir(SortDirection.ASC);
-    }
-  };
+  }, [sortKey, sortDir, debouncedSearch]);
 
   return {
     columns: TABLE_COLUMNS,
@@ -58,6 +77,8 @@ const useTableStates = ({ data, rowsPerPage }: Props) => {
     page,
     setPage,
     totalPages,
+    search,
+    setSearch,
   };
 };
 
