@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
-import { ATHLETES_API_ROUTE } from '../../constants/api/routes.ts';
-import type { Athlete } from '../../types/athletes.ts';
+import type { Athlete } from 'src/types/athletes';
+import { ATHLETES_API_ROUTE } from 'src/constants/routes';
 
 const useAthletes = () => {
   const [data, setData] = useState<Athlete[]>([]);

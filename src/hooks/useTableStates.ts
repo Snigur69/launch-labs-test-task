@@ -1,11 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { TABLE_COLUMNS } from '../../constants/table/columns.ts';
-import type { Athlete } from '../../types/athletes.ts';
-import { FILTER_KEYS, SEARCH_KEYS, SortDirection } from '../../constants/table/table.ts';
-import useDebounce from '../useDebounce';
-import { getFilterOptions } from '../../utils/table/getFilterOptions.ts';
-import { getInitialFilters } from '../../utils/table/getInitialFilters.ts';
+import type { Athlete } from 'src/types/athletes';
+import { FILTER_KEYS, SEARCH_KEYS, SortDirection, TABLE_COLUMNS } from 'src/constants/table';
+import useDebounce from 'src/hooks/useDebounce';
+import { getFilterOptions, getInitialFilters } from 'src/utils/table';
 
 interface Props {
   data: Athlete[];
@@ -72,13 +70,13 @@ const useTableStates = ({ data, rowsPerPage }: Props) => {
   const onSort = useCallback(
     (key: keyof Athlete) => {
       if (sortKey === key) {
-        setSortDir(sortDir === SortDirection.ASC ? SortDirection.DESC : SortDirection.ASC);
+        setSortDir((prev) => (prev === SortDirection.ASC ? SortDirection.DESC : SortDirection.ASC));
       } else {
         setSortKey(key);
         setSortDir(SortDirection.ASC);
       }
     },
-    [sortDir, sortKey],
+    [sortKey],
   );
 
   const onReset = () => {

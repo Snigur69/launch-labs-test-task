@@ -1,8 +1,8 @@
 import { memo } from 'react';
 
-import type { Athlete } from '../../types/athletes.ts';
-import type { TableColumn } from '../../types/table.ts';
-import { SortDirection } from '../../constants/table/table.ts';
+import type { Athlete } from 'src/types/athletes';
+import type { TableColumn } from 'src/types/table';
+import { SortDirection } from 'src/constants/table';
 
 interface Props {
   rows: Athlete[];
@@ -37,7 +37,7 @@ const DataTable = ({ rows, columns, onSort, sortKey, sortDir }: Props) => {
             <tr key={row.id} className="border-t">
               {columns.map(({ key }) => (
                 <td key={key} className="px-3 py-2">
-                  {row[key] ? String(row[key]) : ''}
+                  {String(row[key] ?? '')}
                 </td>
               ))}
             </tr>
