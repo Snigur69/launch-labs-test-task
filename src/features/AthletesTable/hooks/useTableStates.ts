@@ -1,9 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import type { Athlete } from 'src/types/athletes';
-import { FILTER_KEYS, SEARCH_KEYS, SortDirection, TABLE_COLUMNS } from 'src/constants/table';
+import type { Athlete } from 'src/features/AthletesTable/types/athletes';
+import {
+  FILTER_KEYS,
+  SEARCH_KEYS,
+  TABLE_COLUMNS,
+} from 'src/features/AthletesTable/constants/table';
 import useDebounce from 'src/hooks/useDebounce';
 import { getFilterOptions, getInitialFilters } from 'src/utils/table';
+import { SortDirection } from 'src/constants/sort';
 
 interface Props {
   data: Athlete[];

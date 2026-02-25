@@ -1,8 +1,8 @@
 import { memo } from 'react';
 
-import type { Athlete } from 'src/types/athletes';
+import type { Athlete } from 'src/features/AthletesTable/types/athletes';
 import type { TableColumn } from 'src/types/table';
-import { SortDirection } from 'src/constants/table';
+import { SortDirection } from 'src/constants/sort';
 
 interface Props {
   rows: Athlete[];

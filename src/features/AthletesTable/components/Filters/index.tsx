@@ -1,7 +1,7 @@
 import type { Dispatch, SetStateAction } from 'react';
 
-import type { Athlete } from 'src/types/athletes';
-import { FILTER_KEYS } from 'src/constants/table';
+import type { Athlete } from 'src/features/AthletesTable/types/athletes';
+import { FILTER_KEYS } from 'src/features/AthletesTable/constants/table';
 
 interface Props {
   filters: Record<keyof Athlete, string>;

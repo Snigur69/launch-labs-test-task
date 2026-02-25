@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import type { Athlete } from 'src/types/athletes';
+import type { Athlete } from 'src/features/AthletesTable/types/athletes';
 import { ATHLETES_API_ROUTE } from 'src/constants/routes';
 
 const useAthletes = () => {

@@ -1,5 +1,5 @@
+import type { Athlete } from 'src/features/AthletesTable/types/athletes.ts';
 import type { TableColumn } from 'src/types/table';
-import type { Athlete } from 'src/types/athletes.ts';
 
 export const TABLE_COLUMNS: TableColumn<Athlete>[] = [
   {
@@ -51,11 +51,6 @@ export const TABLE_COLUMNS: TableColumn<Athlete>[] = [
     label: 'Win Rate',
   },
 ];
-
-export enum SortDirection {
-  ASC = 'ASC',
-  DESC = 'DESC',
-}
 
 export const SEARCH_KEYS: Array<keyof Athlete> = [
   'firstName',
