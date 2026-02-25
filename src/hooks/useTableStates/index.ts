@@ -2,8 +2,10 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { TABLE_COLUMNS } from '../../constants/table/columns.ts';
 import type { Athlete } from '../../types/athletes.ts';
-import { SEARCH_KEYS, SortDirection } from '../../constants/table/table.ts';
+import { FILTER_KEYS, SEARCH_KEYS, SortDirection } from '../../constants/table/table.ts';
 import useDebounce from '../useDebounce';
+import { getFilterOptions } from '../../utils/table/getFilterOptions.ts';
+import { getInitialFilters } from '../../utils/table/getInitialFilters.ts';
 
 interface Props {
   data: Athlete[];
@@ -16,16 +18,31 @@ const useTableStates = ({ data, rowsPerPage }: Props) => {
   const [page, setPage] = useState<number>(1);
   const [search, setSearch] = useState<string>('');
   const debouncedSearch = useDebounce(search);
+  const [filters, setFilters] = useState(getInitialFilters(FILTER_KEYS));
+
+  const filterOptions = useMemo(() => getFilterOptions(data, FILTER_KEYS), [data]);
+
+  const filteredRows = useMemo(() => {
+    return data.filter((row) =>
+      FILTER_KEYS.every((key) => {
+        const selectedValue = filters[key];
+
+        if (!selectedValue) return true;
+
+        return String(row[key]) === selectedValue;
+      }),
+    );
+  }, [data, filters]);
 
   const searchedRows = useMemo(() => {
     const string = debouncedSearch.trim().toLowerCase();
 
-    if (!string) return data;
+    if (!string) return filteredRows;
 
-    return data.filter((row) =>
+    return filteredRows.filter((row) =>
       SEARCH_KEYS.some((key) => String(row[key]).toLowerCase().includes(string)),
     );
-  }, [data, debouncedSearch]);
+  }, [filteredRows, debouncedSearch]);
 
   const sortedRows = useMemo(() => {
     if (!sortKey) return searchedRows;
@@ -64,9 +81,17 @@ const useTableStates = ({ data, rowsPerPage }: Props) => {
     [sortDir, sortKey],
   );
 
+  const onReset = () => {
+    setFilters(getInitialFilters(FILTER_KEYS));
+    setPage(1);
+    setSearch('');
+    setSortKey(null);
+    setSortDir(SortDirection.ASC);
+  };
+
   useEffect(() => {
     setPage(1);
-  }, [sortKey, sortDir, debouncedSearch]);
+  }, [sortKey, sortDir, debouncedSearch, filters]);
 
   return {
     columns: TABLE_COLUMNS,
@@ -79,6 +104,10 @@ const useTableStates = ({ data, rowsPerPage }: Props) => {
     totalPages,
     search,
     setSearch,
+    filterOptions,
+    filters,
+    setFilters,
+    onReset,
   };
 };
 

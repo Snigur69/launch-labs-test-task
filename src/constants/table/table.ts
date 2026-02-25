@@ -12,3 +12,5 @@ export const SEARCH_KEYS: Array<keyof Athlete> = [
   'sport',
   'status',
 ];
+
+export const FILTER_KEYS: (keyof Athlete)[] = ['gender', 'status', 'country', 'sport'];
